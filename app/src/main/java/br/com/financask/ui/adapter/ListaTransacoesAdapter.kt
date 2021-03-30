@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import androidx.core.content.ContextCompat
 import br.com.financask.R
 import br.com.financask.extension.formataParaBrasileiro
+import br.com.financask.extension.limitaEmAte
 import br.com.financask.model.Tipo
 import br.com.financask.model.Transacao
 import kotlinx.android.synthetic.main.transacao_item.view.*
@@ -20,6 +21,8 @@ class ListaTransacoesAdapter(
     private val transacoes = transacoes
     private val context = context
 
+    private val limitaDaCategoria = 14
+
     override fun getView(posicao: Int, view: View?, parent: ViewGroup?): View {
         val viewCriada =
             LayoutInflater.from(context).inflate(R.layout.transacao_item, parent, false)
@@ -28,7 +31,12 @@ class ListaTransacoesAdapter(
 
         if (transacao.tipo == Tipo.RECEITA) {
             viewCriada.transacao_valor
-                .setTextColor(ContextCompat.getColor(context, R.color.receita))
+                .setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.receita
+                    )
+                )
         } else {
             viewCriada.transacao_valor.setTextColor(
                 ContextCompat.getColor(
@@ -44,8 +52,8 @@ class ListaTransacoesAdapter(
             viewCriada.transacao_icone.setBackgroundResource(R.drawable.icone_transacao_item_despesa)
         }
 
-        viewCriada.transacao_valor.text = transacao.valor.toString() // text = property
-        viewCriada.transacao_categoria.text = transacao.categoria
+        viewCriada.transacao_valor.text = transacao.valor.formataParaBrasileiro() // text = property
+        viewCriada.transacao_categoria.text = transacao.categoria.limitaEmAte(limitaDaCategoria)
         viewCriada.transacao_data.text = transacao.data.formataParaBrasileiro()
 
         return viewCriada
